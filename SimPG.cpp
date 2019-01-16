@@ -6,7 +6,7 @@ using namespace std;
 int random(int min, int max); //random number generator
 int action(string act1); //action function while free roaming
 int attack(); //attack function in combat
-int shopping(int gx);
+void shopping(double &gold, /*int cx,*/ string ix, double &swdstr, double &bowstr, double &magstr);
 
 double xp,str,lvl,gold,spd,mag,hp,maxhp,classchoice;
 double enmstr,enmlvl,enmspd,enmmag,enmhp,enmgold,enmxp;
@@ -68,13 +68,15 @@ int action(string act1)
     cin >> inp;
 
     if (inp=="help") cout << "Current commands: explore, attack, stats, help, shop, exit." << endl;
+    if (inp=="stats") cout << gold << " " << swdstr << endl;
     if (inp=="attack") cout << "Can't do that right now!\n";
     if (inp=="exit") return 0;
+    if (inp=="gold") gold=gold+9999;
     if (inp=="shop"){
         cout << "-------------------------------\n\n" << "Welcome to the shop!\n\n" << "Swords:\n" << "1 - Steel Sword - 100 gold\n2 - Silver Sword - 250 gold\n3 - Platinum Sword - 500 gold\n\n" << "Bows: \n" << "4 - Steel Bow - 100 gold\n5 - Silver Bow - 250 gold\n6 - Platinum Bow - 500 gold\n\n" << "Staves: \n" << "7 - Fire Staff - 100 gold\n8 - Blaze Staff - 250 gold\n9 - Inferno Staff - 500 gold\n\n";
         cout << "-------------------------------\n\n";
-        cin >> inp;
-        if (inp=="1"){
+        shopping(gold,inp,swdstr, bowstr, magstr);
+/*        if (inp=="1"){
             if (gold<100) cout << "You don't have enough gold to buy that!\n" << "-------------------------------\n";
             if (gold>=100)
             {
@@ -154,18 +156,21 @@ int action(string act1)
                 cout << "You bought a Inferno Staff for 500 gold.\n" << "-------------------------------\n";
                 gold = gold-500;
             }
-        }
+        }*/
     }
     if(inp == "explore"){
         enmlvl=random(lvl-1,lvl+1);
         if (enmlvl<=0) enmlvl=1;
         cout << "Enemy level " << enmlvl;
-        if (lvl>=1)enmstr=1 else(lvl<1)enmstr=1+(enmlvl*0.25);
-        if (lvl<=3) enmspd=lvl else enmspd=3;
+        if (lvl>=1)enmstr=1;
+        else if (lvl<1)enmstr=1+(enmlvl*0.25);
+        if (lvl<=3) enmspd=lvl;
+        else enmspd=3;
         enmmag=1;
         enmhp=10+(2*lvl);
         enmgold=lvl+1;
         enmxp=15;
+}
 }
 int random(int min, int max) //range : [min, max)
 {
@@ -177,26 +182,49 @@ int random(int min, int max) //range : [min, max)
    }
    return min + rand() % (( max + 1 ) - min);
 }
-int shopping(int gx, /*int cx,*/ int ix, string ex, int esx) //gold, idk, input, equip name, equip temporary strength
+void shopping(double &gold, /*int cx,*/ string ix, double &swdstr, double &bowstr, double &magstr) //gold, idk, input, equip name, equip temporary strength
 {
-    cout << "-------------------------------\n\n" << "Welcome to the shop!\n\n" << "Swords:\n" << "1 - Steel Sword - 100 gold\n2 - Silver Sword - 250 gold\n3 - Platinum Sword - 500 gold\n\n" << "Bows: \n" << "4 - Steel Bow - 100 gold\n5 - Silver Bow - 250 gold\n6 - Platinum Bow - 500 gold\n\n" << "Staves: \n" << "7 - Fire Staff - 100 gold\n8 - Blaze Staff - 250 gold\n9 - Inferno Staff - 500 gold\n\n";
+    cout << "-------------------------------\n\n" << "Welcome to the shop!\n\n" << "Swords:\n" << "1 - Steel Sword - 100 gold\n2 - Silver Sword - 250 gold\n3 - Platinum Sword - 1000 gold\n\n" << "Bows: \n" << "4 - Steel Bow - 100 gold\n5 - Silver Bow - 250 gold\n6 - Platinum Bow - 1000 gold\n\n" << "Staves: \n" << "7 - Fire Staff - 100 gold\n8 - Blaze Staff - 250 gold\n9 - Inferno Staff - 1000 gold\n\n";
     cout << "-------------------------------\n\n";
     cin >> ix;
-    if (ix==1 || ix==4 || ix==7){
-        if (gx < 100) return "You don't have enough gold for that!";
-        if (gx >= 100){
-            gx=gx-100;
-            esx=3;
-            return "Thank you for the business. See anything else you might like?";
+    if (ix=="1" || ix=="4" || ix=="7"){
+        if (gold < 100) cout << "You don't have enough gold for that!\n";
+        if (gold >= 100){
+            gold=gold-100;
+            if(ix=="1") swdstr=3;
+            if(ix=="4") bowstr=3;
+            if(ix=="7") magstr=3;
+            cout << "Thank you for the business. See anything else you might like?\n";
         }
     }
-
+    if (ix=="2" || ix=="5" || ix=="8"){
+        if (gold < 250) cout << "You don't have enough gold for that!\n";
+        if (gold >= 250){
+            gold=gold-250;
+            if(ix=="2") swdstr=5;
+            if(ix=="5") bowstr=5;
+            if(ix=="8") magstr=5;
+            cout << "Thank you for the business. See anything else you might like?\n";
+        }
+    }
+     if (ix=="3" || ix=="6" || ix=="9"){
+        if (gold < 1000) cout << "You don't have enough gold for that!\n";
+        if (gold >= 1000){
+            gold=gold-1000;
+            if(ix=="3") swdstr=7;
+            if(ix=="6") bowstr=7;
+            if(ix=="9") magstr=7;
+            cout << "Thank you for the business. See anything else you might like?\n";
+        }
+    }
 
 }
 
 
 /*to-do:
--condense shopping
+-condense shopping (done)
 -condense combat and add dodging/casting/healing
 -add items
+-make enemy generation a function instead of being within the actual explore command
+-experiment with art for the stuff
 */
